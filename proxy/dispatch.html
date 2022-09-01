@@ -1,0 +1,59 @@
+<!--/* Copyright � 2003-2007 Rustici Software, LLC  All Rights Reserved. */-->
+<html>
+<head>
+    <title>SCORM Dispatch</title>
+    <script type="text/javascript" src="configuration.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="customConfiguration.js"></script>
+    <script type="text/javascript">
+
+        //Fix Cloud Resources to be SSL when launching in SSL
+        if (window.location.protocol === "https:") {
+            DispatchRoot = DispatchRoot.replace('http:', 'https:');
+        } else {
+            //Fix Cloud Resources to be HTTP when launching in HTTP
+            DispatchRoot = DispatchRoot.replace('https:', 'http:');
+        }
+
+        include_script(DispatchRoot + "scormdriver.js");
+        include_script(DispatchRoot + "/TinCanJS/build/tincan-min.js");
+
+        function DispatchStart() {
+            if (typeof Start !== "undefined" && typeof LoadContent !== "undefined") {
+                strLMSStandard = "SCORM";
+                // if (typeof ShowDebugWindow !== "undefined" && typeof DebugMode !== "undefined" && DebugMode) {
+                    ShowDebugWindow();
+                // }
+                Start();
+                return;
+            }
+            setTimeout("DispatchStart()", 500);
+        }
+
+        function DispatchUnload() {
+            WriteToDebug("In DispatchUnload");
+            WriteToDebug("Unloading from DispatchUnload");
+            Unload();
+            WriteToDebug("Unloaded from DispatchUnload");
+        }
+
+    </script>
+    <style>
+        html {
+            height: 100%;
+            overflow-y: hidden;
+        }
+        iframe, body {
+            height: 100%;
+            width: 100%;
+            border: none;
+            margin: 0px;
+        }
+    </style>
+</head>
+<body onload="DispatchStart()" onunload="DispatchUnload()">
+    <!-- We set the src to blank.html to avoid security warnings in IE6 / IE7 when launching in HTTPS -->
+    <iframe id="dispatch_content_frame" name="dispatch_content_frame" src="blank.html" allowfullscreen mozallowfullscreen webkitallowfullscreen allow="autoplay" style="display:none;"></iframe>
+    <iframe id="dispatch_loading_frame" name="dispatch_loading_frame" src="blank.html"></iframe>
+</body>
+</html>

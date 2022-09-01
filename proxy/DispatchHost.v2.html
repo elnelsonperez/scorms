@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!-- @@BANNER@@ -->
+
+<html style="width: 100%; height: 100%; overflow-y: hidden;">
+
+<head>
+	<script>
+		function GetQueryStringValue (strElement, strQueryString) {
+            var aryPairs,
+                i,
+                intEqualPos,
+                strArg = "",
+                strValue = "";
+
+            // get rid of the leading "?"
+            strQueryString = strQueryString.substring(1);
+
+            // split into name/value pairs
+            aryPairs = strQueryString.split("&");
+
+            strElement = strElement.toLowerCase();
+
+            // search each querystring value and return the first match
+            for (i = 0; i < aryPairs.length; i += 1) {
+                intEqualPos = aryPairs[i].indexOf("=");
+
+                if (intEqualPos !== -1) {
+                    strArg = aryPairs[i].substring(0, intEqualPos);
+
+                    if (strArg.toLowerCase() === strElement.toLowerCase()) {
+                        strValue = aryPairs[i].substring(intEqualPos + 1);
+
+                        strValue = strValue.replace(/\+/g, "%20");
+                        strValue = unescape(strValue);
+
+                        return strValue;
+                    }
+                }
+            }
+
+            // if we didn't find a match, return an empty string
+            return "";
+        }
+
+        function loadFrames () {
+            var startPath = GetQueryStringValue("URL", document.location.search);
+
+            //
+            // This frame goes to the actual real content, for us that means the web service call
+            // to dispatch.launch which eventually routes to the content host player. The player
+            // will include the JS that includes the DispatchDriver (dispatch.server.js), who talks
+            // back to the launching LMS via the pipe
+            //
+            document.getElementById("contentRelay").setAttribute("src", startPath);
+        }
+	</script>
+</head>
+
+<body onload="loadFrames()" style="width: 100%; height: 100%; margin: 0px;">
+	<!-- We set the src to blank.html to avoid security warnings in IE6 / IE7 when launching in HTTPS -->
+	<iframe id="contentRelay" name="contentRelay" src="blank.html" style="width: 100%; height: 100%; border: 0px;"
+		allowfullscreen mozallowfullscreen webkitallowfullscreen allow="autoplay">
+</body>
+
+</html>

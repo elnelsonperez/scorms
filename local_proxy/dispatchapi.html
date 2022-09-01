@@ -1,0 +1,40 @@
+<html>
+
+<head>
+<script language="javascript" src="configuration.js"></script>
+<script language="javascript" src="utils.js"></script>
+<script type="text/javascript">
+	console.log("DISPATCH API LOADED")
+   	//Fix dispatch root to be SSL when launching in SSL
+   	if(window.location.protocol == "https:"){
+    	DispatchRoot = DispatchRoot.replace('http:', 'https:');
+   	}
+    include_script("dispatch.client.driver.v2.js");
+
+	function DispatchApiBeforeUnload() {
+		// Why call checkForMessages here? Mostly just to give the content server time
+		// to post any last messages before we unload. This is sometimes a problem, if
+		// the learner closes the window instead of exiting the content properly. If we
+		// can catch the message here, great; otherwise, it's up to DispatchUnload.
+		SD.WriteToDebug("Checking for messages in DispatchApiBeforeUnload");
+		window.checkForMessages();
+		window.checkForMessages();
+		window.checkForMessages();
+	}
+</script>
+</head>
+
+<body style="background-color: #FFCCCC" onbeforeunload="DispatchApiBeforeUnload()">
+
+This is the pipe page. This will be a hidden frame for talking to the SD object from dispatch.html  <script>document.write("document.domain = " + document.domain);</script>
+	<button onclick="sendPipeMessage()">Send Pipe Message</button>
+
+	<br />
+
+	<p>
+		<div id="output"></div>
+
+	</p>
+
+</body>
+</html>
