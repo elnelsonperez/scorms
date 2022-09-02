@@ -14,13 +14,13 @@ const FC = {
       studentName = cfg.lmsAPI.LMSGetValue('cmi.core.student_name')
     }
 
-    const frameUrl = cfg.launcherUrl.replace('{STUDENT_ID}', encodeURIComponent(studentId))
+    let frameUrl = cfg.launcherUrl.replace('{STUDENT_ID}', encodeURIComponent(studentId))
         .replace("{STUDENT_NAME}", encodeURIComponent(studentName))
         .replace("{REFERRING_URL}", encodeURIComponent(cfg.referringUrl))
         .replace("{RESOURCE_ID}", encodeURIComponent(cfg.resourceId))
 
     if (window.location.protocol === "http:") {
-      frameUrl.replace("https://",'http://')
+      frameUrl = frameUrl.replace("https://",'http://')
     }
 
     document.getElementById(cfg.contentFrameId).src = frameUrl
