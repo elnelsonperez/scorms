@@ -1,7 +1,7 @@
 const FC = {
 
   initialize: function (cfg) {
-    cfg.lmsAPI.LMSInitialize()
+    cfg.lmsAPI && cfg.lmsAPI.LMSInitialize()
     this.loadLauncherFrame(cfg)
     this.registerPostEventListener(cfg.lmsAPI)
   },
@@ -76,7 +76,7 @@ const FC = {
     }
   },
   log: function () {
-    console.info(arguments)
+    console.info(...arguments)
   }
 }
 
