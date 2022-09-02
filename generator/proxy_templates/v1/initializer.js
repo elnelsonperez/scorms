@@ -1,17 +1,18 @@
 const FC = {
 
   initialize: function (cfg) {
-    cfg.lmsAPI && cfg.lmsAPI.LMSInitialize()
-    this.loadLauncherFrame(cfg)
-    this.registerPostEventListener(cfg.lmsAPI)
+    const lmsAPI = getScormAPI()
+    lmsAPI && lmsAPI.LMSInitialize()
+    this.loadLauncherFrame(lmsAPI, cfg)
+    this.registerPostEventListener(lmsAPI)
   },
-  loadLauncherFrame: function (cfg) {
+  loadLauncherFrame: function (lmsAPI, cfg) {
     let studentId = ''
     let studentName = ''
 
-    if (cfg.lmsAPI) {
-      studentId = cfg.lmsAPI.LMSGetValue('cmi.core.student_id')
-      studentName = cfg.lmsAPI.LMSGetValue('cmi.core.student_name')
+    if (lmsAPI) {
+      studentId = lmsAPI.LMSGetValue('cmi.core.student_id')
+      studentName = lmsAPI.LMSGetValue('cmi.core.student_name')
     }
 
     let frameUrl = cfg.launcherUrl.replace('{STUDENT_ID}', encodeURIComponent(studentId))
@@ -20,7 +21,7 @@ const FC = {
         .replace("{RESOURCE_ID}", encodeURIComponent(cfg.resourceId))
 
     if (window.location.protocol === "http:") {
-      frameUrl = frameUrl.replace("https://",'http://')
+      frameUrl = frameUrl.replace("https://", 'http://')
     }
 
     document.getElementById(cfg.contentFrameId).src = frameUrl
@@ -80,4 +81,25 @@ const FC = {
   }
 }
 
+
+function scanParentsForAPI(win) {
+  var MAX_PARENTS_TO_SEARCH = 500;
+  var nParentsSearched = 0;
+  while ((win.API == null || win.API === undefined) && win.parent != null && win.parent != win && nParentsSearched <= MAX_PARENTS_TO_SEARCH) {
+    nParentsSearched++;
+    win = win.parent;
+  }
+  return win.API;
+}
+
+function getScormAPI() {
+  var API = null;
+  if (window.parent != null && window.parent != window) {
+    API = scanParentsForAPI(window.parent);
+  }
+  if (API == null && window.top.opener != null) {
+    API = scanParentsForAPI(window.top.opener);
+  }
+  return API;
+}
 
