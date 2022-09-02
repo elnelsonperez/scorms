@@ -1,1 +1,1 @@
-CONFIG_TEST='A'
+ROOT_URL='http://localhost:5000'

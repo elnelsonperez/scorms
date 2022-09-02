@@ -34,11 +34,10 @@
   </organizations>
 
   <resources>
-    <resource identifier="r1" type="webcontent" adlcp:scormtype="sco" href="dispatch.html">
+    <resource identifier="r1" type="webcontent" adlcp:scormtype="sco" href="main.html">
       <!--****** FILES ******-->
-      <file href="dispatch.html"/>
+      <file href="main.html"/>
       <file href="configuration.js"/>
-      <file href="utils.js"/>
     </resource>
   </resources>
 </manifest>

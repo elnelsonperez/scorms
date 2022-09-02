@@ -1,0 +1,36 @@
+<!doctype html>
+<head>
+    <title>Launcher</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 50%;
+        }
+    </style>
+
+    <script>
+      window.addEventListener("message", (event) => {
+        console.log('Event received in launcher')
+        window.parent && window.parent.postMessage(event.data, '*')
+      }, false);
+
+      window.open('http://localhost:5000/static/testscorm/main.html', null, "height=500,width=750");
+
+    </script>
+</head>
+<body>
+<p>We launched our course in a new window, but if you do not see it, a popup blocker might be preventing it from
+    opening.</p>
+</body>

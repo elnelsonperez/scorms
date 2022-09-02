@@ -1,0 +1,96 @@
+<!doctype html>
+<html style="height:100%; margin:0">
+<head>
+
+    <script src="offline_API_wrapper.js" type="text/javascript" language="javascript"></script>
+    <script>
+      Function.prototype.clone = function () {
+        var cloneObj = this;
+        if (this.__isClone) {
+          cloneObj = this.__clonedFrom;
+        }
+
+        var temp = function () {
+          return cloneObj.apply(this, arguments);
+        };
+        for (var key in this) {
+          temp[key] = this[key];
+        }
+
+        temp.__isClone = true;
+        temp.__clonedFrom = cloneObj;
+
+        return temp;
+
+      };
+
+      const oldAPI = {
+        LMSCommit: window.API.LMSCommit.clone(),
+        LMSFinish: window.API.LMSFinish.clone(),
+        LMSGetDiagnostic: window.API.LMSGetDiagnostic.clone(),
+        LMSGetErrorString: window.API.LMSGetErrorString.clone(),
+        LMSGetLastError: window.API.LMSGetLastError.clone(),
+        LMSGetValue: window.API.LMSGetValue.clone(),
+        LMSInitialize: window.API.LMSInitialize.clone(),
+        LMSSetValue: window.API.LMSSetValue.clone(),
+      }
+
+      function sendLmsMessageUpwards(action, arguments) {
+        var payload = {
+          action,
+          arguments
+        }
+        window.opener && window.opener.postMessage(JSON.stringify(payload), "*")
+      }
+
+      window.API = {
+        LMSInitialize: function () {
+          sendLmsMessageUpwards('LMSInitialize')
+          return oldAPI.LMSInitialize()
+        },
+        LMSFinish: function () {
+          sendLmsMessageUpwards('LMSFinish')
+          return oldAPI.LMSFinish()
+        },
+        LMSGetValue: function (key) {
+          sendLmsMessageUpwards('LMSGetValue', {key})
+          return oldAPI.LMSGetValue(key)
+        },
+        LMSSetValue: function (key, value) {
+          sendLmsMessageUpwards('LMSSetValue', {key, value})
+          return oldAPI.LMSSetValue(key, value)
+        },
+        LMSCommit: function () {
+          sendLmsMessageUpwards('LMSCommit')
+          return oldAPI.LMSCommit()
+        },
+        LMSGetLastError: function () {
+          return oldAPI.LMSGetLastError()
+        },
+        LMSGetErrorString: function () {
+          return oldAPI.LMSGetErrorString()
+        },
+        LMSGetDiagnostic: function () {
+          return oldAPI.LMSGetErrorString()
+        }
+      }
+
+    </script>
+</head>
+<style>
+    body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
+<body>
+<iframe src="index.html"></iframe>
+</body>
+</html>
